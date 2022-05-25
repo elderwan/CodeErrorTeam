@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+      ">
+
+    <!-- Shiro生命周期处理器 -->
+    <!-- 配置lifecycleBeanPostProcessor，Shiro的生命周期管理器 -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+    <!-- 启用Spring IOC容器对Shiro管理，但必须配置了lifecycleBeanPostProcessor后才可以使用 -->
+<!--    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifecycleBeanPostProcessor" />-->
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+
+
+    <!--    配置加密-->
+    <bean id="credentialsMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+        <property name="hashAlgorithmName" value="MD5"></property>
+        <property name="hashIterations" value="1024"></property>
+    </bean>
+
+
+<!--读取Realm-->
+    <bean id="userRealm" class="com.ElderWan.realm.UserRealm">
+        <property name="credentialsMatcher" ref="credentialsMatcher"></property>
+    </bean>
+<!--    security-->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+    <property name="realm" ref="userRealm"></property>
+</bean>
+
+<!--    配置拦截规则-->
+    <bean id="shiroFilter"  class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+<!--        配置securitymanager-->
+        <property name="securityManager" ref="securityManager"></property>
+<!--        告诉shiro登陆地址-->
+        <property name="loginUrl" value="/index.html"></property>
+<!--        哪些资源拦截-->
+        <property name="filterChainDefinitions">
+            <value>
+<!--                anon匿名-->
+                /index.html=anon
+                /asserts/**=anon
+                /login=anon
+                <!--logout登出-->
+                /logout=logout
+<!--                athc需要认证-->
+                /**=authc
+
+
+            </value>
+        </property>
+
+    </bean>
+
+
+</beans>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.ElderWan.mapper.EmpMapper">
+    <resultMap id="empResultMap" type="com.ElderWan.entity.Emp">
+        <id property="id" column="emp_id"></id>
+        <result property="name" column="emp_name"></result>
+        <result property="gender" column="emp_gender"></result>
+        <result property="status" column="status"></result>
+        <result property="dept.id" column="dept_id"></result>
+        <result property="dept.name" column="dept_name"></result>
+    </resultMap>
+    <update id="update" parameterType="com.ElderWan.entity.Emp">
+        UPDATE emp
+        SET name=#{name},gender=#{gender},status=#{status},dept_id=#{dept.id}
+        WHERE id=#{id}
+    </update>
+    <delete id="delete" parameterType="java.lang.Integer">
+        DELETE FROM emp
+        WHERE id=#{id}
+    </delete>
+    <select id="queryAll" resultMap="empResultMap" >
+        SELECT e.id as emp_id,e.name as emp_name,e.gender as emp_gender,e.status,d.id as dept_id,d.name as dept_name
+        FROM emp e,dept d
+        WHERE e.dept_id=d.id
+    </select>
+    <insert id="insert" parameterType="com.ElderWan.entity.Emp">
+        INSERT INTO emp(name,gender,dept_id,status)
+        VALUE (#{name},#{gender},#{dept.id},#{status})
+    </insert>
+    <select id="getById" resultMap="empResultMap" parameterType="java.lang.Integer">
+        SELECT e.id as emp_id,e.name as emp_name,e.gender as emp_gender,e.status,d.id as dept_id,d.name as dept_name
+        FROM emp e,dept d
+        WHERE e.dept_id=d.id AND e.id = #{id}
+    </select>
+</mapper>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.ElderWan.mapper.PermsMapper">
+
+
+    <select id="queryPerms" resultType="java.lang.String" parameterType="java.lang.String">
+        SELECT m.perm
+        FROM user_list u,role r,user_role ur,role_menu rm,menu m
+        WHERE u.user_id=ur.user_id AND ur.id=r.id
+          AND r.id= rm.role_id AND rm.menu_id=m.id
+          AND u.user_name =#{name}
+    </select>
+</mapper>
